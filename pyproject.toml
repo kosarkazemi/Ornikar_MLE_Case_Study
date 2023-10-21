@@ -4,10 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["Kosar Kazemi"]
 readme = "README.md"
+packages = [{ include = "**/*" }]
+
 
 [tool.poetry.dependencies]
 python = "^3.11"
-flask = "1.1.2"
+flask = ">=2.2.2"
 requests = "2.31.0"
 werkzeug = "2.2.2"
 scikit-learn = "1.3.1"

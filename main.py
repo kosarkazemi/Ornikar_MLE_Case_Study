@@ -1,5 +1,5 @@
 import pandas as pd
-import joblib
+import pickle
 from src.data_preprocessing import load_data, preprocess_data, split_data
 from src.model import train_model
 from src.serving import predict
@@ -23,10 +23,12 @@ if __name__ == '__main__':
     model = train_model(X_train, y_train)
 
     # Save the trained model to a file
-    joblib.dump(model, config.model_file_path)
+    # joblib.dump(model, config.model_file_path)
+    pickle.dump(model, open(config.model_file_path, 'wb'))
+
 
     # Predict using the trained model
-    y_pred = predict(model, X_test)
+    y_pred = predict(model, X_test, do_prepocess=False)
 
     # Evaluate the model
     accuracy = accuracy_score(y_test, y_pred)
