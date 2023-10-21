@@ -60,8 +60,8 @@ def drop_unnecessary_columns(data):
     Args:
         data (pd.DataFrame): Input data.
     """
-    columns_to_drop = ['index', 'last_utm_source', 'long_quote_id', 'lead_id', 'rbs_result', 'policy_subscribed_at',
-                'contract_id', 'payment_frequency', 'submitted_at', 'effective_start_date']
+    columns_to_drop = ['last_utm_source', 'long_quote_id', 'lead_id', 'rbs_result', 'policy_subscribed_at',
+                'contract_id', 'payment_frequency', 'submitted_at', 'effective_start_date', 'has_subscribed_online']
     data.drop(columns_to_drop, axis=1, inplace=True)
 
 def map_intensity_values(data):
@@ -116,7 +116,7 @@ def preprocess_data(data):
     standardize_numerical_features(preprocessed_data)
     map_intensity_values(preprocessed_data)
     preprocessed_data.dropna(inplace=True)
-    preprocessed_data.to_csv('preprocessed_data.csv', index=False)
+    preprocessed_data.to_csv('data/preprocessed_data.csv', index=False)
     print("Finished with preprocessing")
     return preprocessed_data
 
@@ -131,7 +131,32 @@ def split_data(data):
     X = data.drop('has_subscribed', axis=1)
     y = data['has_subscribed']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_test.to_csv('data/X_test.csv', index=False)
     return X_train, X_test, y_train, y_test
+
+def preprocess_input_data(input_data):
+    """
+    Preprocess input data to make it suitable for predictions.
+    Args:
+        input_data (dict): Input data for predictions.
+    Returns:
+        pd.DataFrame: Preprocessed input data.
+    """
+    # Create a DataFrame from the input data
+    if not isinstance(input_data, pd.DataFrame):
+        input_df = pd.DataFrame([input_data])
+    else:
+        input_df = input_data
+    # Perform the same preprocessing steps as in preprocess_data
+    convert_timestamps_to_datetime(input_df)
+    calculate_time_difference(input_df)
+    drop_unnecessary_columns(input_df)
+    encode_categorical_features(input_df)
+    standardize_numerical_features(input_df)
+    map_intensity_values(input_df)
+    input_df.dropna(inplace=True)
+
+    return input_df
 
 if __name__ == '__main__':
     data_file_path = 'data/long_quotes.csv'
