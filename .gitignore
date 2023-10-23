@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 materials/ORNIKAR.pdf
 .DS_Store
+*.pages
